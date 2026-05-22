@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR 코드 생성기</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+            resize: vertical;
+        }
+
+        textarea {
+            min-height: 100px;
+        }
+
+        textarea:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-generate {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-generate:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-download {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-download:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(72, 187, 120, 0.4);
+        }
+
+        .btn-clear {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-clear:hover {
+            background: #e53e3e;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 101, 101, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .qr-output {
+            text-align: center;
+            padding: 30px;
+            background: #f7fafc;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .qr-output.active {
+            display: block;
+        }
+
+        #qrcode {
+            display: inline-block;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .option-group {
+            text-align: left;
+        }
+
+        .option-group label {
+            margin-bottom: 8px;
+        }
+
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            color: #48bb78;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .options {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 QR 코드 생성기</h1>
+
+        <div class="input-section">
+            <label for="textInput">텍스트 또는 URL 입력:</label>
+            <textarea id="textInput" placeholder="QR 코드로 변환할 텍스트나 URL을 입력하세요..."></textarea>
+        </div>
+
+        <div class="options">
+            <div class="option-group">
+                <label for="sizeSelect">크기 선택:</label>
+                <select id="sizeSelect">
+                    <option value="100">작음 (100px)</option>
+                    <option value="200" selected>중간 (200px)</option>
+                    <option value="300">큼 (300px)</option>
+                    <option value="400">매우 큼 (400px)</option>
+                </select>
+            </div>
+
+            <div class="option-group">
+                <label for="colorSelect">색상 선택:</label>
+                <select id="colorSelect">
+                    <option value="dark" selected>검은색</option>
+                    <option value="blue">파란색</option>
+                    <option value="red">빨간색</option>
+                    <option value="green">초록색</option>
+                    <option value="purple">보라색</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button class="btn-generate" onclick="generateQR()">QR 코드 생성</button>
+            <button class="btn-download" id="downloadBtn" onclick="downloadQR()" style="display: none;">다운로드</button>
+            <button class="btn-clear" onclick="clearAll()">초기화</button>
+        </div>
+
+        <div class="qr-output" id="qrOutput">
+            <div id="qrcode"></div>
+            <button class="btn-download" onclick="downloadQR()">QR 코드 다운로드</button>
+            <div class="success-message" id="successMessage">✓ QR 코드가 생성되었습니다!</div>
+        </div>
+    </div>
+
+    <script>
+        let currentQRCode = null;
+
+        function generateQR() {
+            const text = document.getElementById('textInput').value.trim();
+            
+            if (!text) {
+                alert('텍스트를 입력해주세요!');
+                return;
+            }
+
+            const size = document.getElementById('sizeSelect').value;
+            const colorMode = document.getElementById('colorSelect').value;
+
+            // Clear previous QR code
+            const qrcodeDiv = document.getElementById('qrcode');
+            qrcodeDiv.innerHTML = '';
+
+            // Color mapping
+            const colorMap = {
+                'dark': { dark: '#000000', light: '#FFFFFF' },
+                'blue': { dark: '#0066cc', light: '#E6F2FF' },
+                'red': { dark: '#cc0000', light: '#FFE6E6' },
+                'green': { dark: '#00aa00', light: '#E6FFE6' },
+                'purple': { dark: '#7700aa', light: '#F0E6FF' }
+            };
+
+            const colors = colorMap[colorMode];
+
+            // Generate QR code
+            currentQRCode = new QRCode(document.getElementById('qrcode'), {
+                text: text,
+                width: parseInt(size),
+                height: parseInt(size),
+                colorDark: colors.dark,
+                colorLight: colors.light,
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            // Show output section
+            document.getElementById('qrOutput').classList.add('active');
+            document.getElementById('downloadBtn').style.display = 'inline-block';
+            
+            // Show success message
+            const successMsg = document.getElementById('successMessage');
+            successMsg.classList.remove('show');
+            setTimeout(() => {
+                successMsg.classList.add('show');
+            }, 100);
+
+            // Hide success message after 3 seconds
+            setTimeout(() => {
+                successMsg.classList.remove('show');
+            }, 3000);
+        }
+
+        function downloadQR() {
+            const canvas = document.querySelector('#qrcode canvas');
+            if (canvas) {
+                const link = document.createElement('a');
+                link.download = 'qrcode.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }
+        }
+
+        function clearAll() {
+            document.getElementById('textInput').value = '';
+            document.getElementById('qrOutput').classList.remove('active');
+            document.getElementById('downloadBtn').style.display = 'none';
+            document.getElementById('qrcode').innerHTML = '';
+            document.getElementById('textInput').focus();
+        }
+
+        // Enter key to generate QR code
+        document.getElementById('textInput').addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') {
+                generateQR();
+            }
+        });
+    </script>
+</body>
+</html>
