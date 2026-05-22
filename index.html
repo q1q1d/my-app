@@ -594,7 +594,7 @@
             <div class="timer-bar">
                 <div class="timer-fill" id="timerFill"></div>
             </div>
-            <div id="timerText">10:00</div>
+            <div id="timerText">00:30</div>
         </div>
 
         <div class="main-content">
@@ -704,7 +704,7 @@
                         <div class="seal">인</div>
                         <div class="timer-display">
                             <div>남은 시간</div>
-                            <div class="time-value" id="cardTimer">10:00</div>
+                            <div class="time-value" id="cardTimer">00:30</div>
                         </div>
                     </div>
                 </div>
@@ -739,8 +739,8 @@
     <script>
         let currentQR = null;
         let photoFile = null;
-        let totalTime = 600; // 10분 (초)
-        let remainingTime = 600;
+        let totalTime = 30; // 30초
+        let remainingTime = 30;
         let timerInterval = null;
         let editingField = null;
 
@@ -773,15 +773,15 @@
             document.getElementById('timerFill').style.width = percentage + '%';
 
             // 색상 변경
-            if (remainingTime <= 60) {
+            if (remainingTime <= 10) {
                 document.getElementById('timerFill').style.background = 'linear-gradient(90deg, #ef4444, #dc2626)';
-            } else if (remainingTime <= 180) {
+            } else if (remainingTime <= 15) {
                 document.getElementById('timerFill').style.background = 'linear-gradient(90deg, #f59e0b, #d97706)';
             }
         }
 
         function resetTimer() {
-            remainingTime = 600;
+            remainingTime = 30;
             updateTimerDisplay();
         }
 
