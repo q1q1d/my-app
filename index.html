@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR 코드 생성기</title>
+    <title>정부24 민증 생성기</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         * {
@@ -13,8 +13,8 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Noto Sans KR', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -23,168 +23,420 @@
         }
 
         .container {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 600px;
+            max-width: 1200px;
             width: 100%;
-            padding: 40px;
         }
 
-        h1 {
+        .header {
             text-align: center;
-            color: #333;
+            color: white;
             margin-bottom: 30px;
-            font-size: 28px;
         }
 
-        .input-section {
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .timer {
+            text-align: center;
+            color: white;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .timer-bar {
+            width: 200px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            margin: 10px auto;
+            overflow: hidden;
+        }
+
+        .timer-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #f59e0b);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
             margin-bottom: 30px;
+        }
+
+        .form-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-height: 800px;
+            overflow-y: auto;
+        }
+
+        .form-section h2 {
+            color: #1e40af;
+            font-size: 18px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #dbeafe;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
         }
 
         label {
             display: block;
-            margin-bottom: 10px;
-            color: #555;
+            margin-bottom: 6px;
+            color: #333;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
         }
 
-        textarea, input[type="text"] {
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="date"],
+        input[type="time"],
+        select,
+        textarea,
+        input[type="file"] {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 14px;
+            padding: 8px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 12px;
             font-family: inherit;
-            transition: border-color 0.3s ease;
-            resize: vertical;
+            transition: all 0.3s ease;
         }
 
-        textarea {
-            min-height: 100px;
-        }
-
-        textarea:focus, input[type="text"]:focus {
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        input[type="date"]:focus,
+        input[type="time"]:focus,
+        select:focus,
+        textarea:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: #1e40af;
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+        }
+
+        input[type="file"]::file-selector-button {
+            padding: 6px 12px;
+            background: #1e40af;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 11px;
+        }
+
+        input[type="file"]::file-selector-button:hover {
+            background: #1e3a8a;
+        }
+
+        .photo-preview {
+            width: 100px;
+            height: 130px;
+            border: 2px dashed #1e40af;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            overflow: hidden;
+            background: #f0f9ff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .photo-preview:hover {
+            border-color: #059669;
+            background: #ecfdf5;
+        }
+
+        .photo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-hint {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 4px;
         }
 
         .button-group {
             display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
+            gap: 8px;
+            margin-top: 15px;
         }
 
         button {
             flex: 1;
-            padding: 12px 20px;
+            padding: 10px;
             border: none;
-            border-radius: 8px;
-            font-size: 14px;
+            border-radius: 6px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .btn-generate {
-            background: #667eea;
+            background: #1e40af;
             color: white;
         }
 
         .btn-generate:hover {
-            background: #5568d3;
+            background: #1e3a8a;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 5px 15px rgba(30, 64, 175, 0.3);
         }
 
         .btn-download {
-            background: #48bb78;
+            background: #059669;
             color: white;
         }
 
         .btn-download:hover {
-            background: #38a169;
+            background: #047857;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(72, 187, 120, 0.4);
+            box-shadow: 0 5px 15px rgba(5, 150, 105, 0.3);
         }
 
         .btn-clear {
-            background: #f56565;
+            background: #ef4444;
             color: white;
         }
 
         .btn-clear:hover {
-            background: #e53e3e;
+            background: #dc2626;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(245, 101, 101, 0.4);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
         }
 
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .qr-output {
-            text-align: center;
+        /* 민증 카드 스타일 */
+        .card-preview {
+            background: white;
+            border-radius: 12px;
             padding: 30px;
-            background: #f7fafc;
-            border-radius: 8px;
-            display: none;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
 
-        .qr-output.active {
-            display: block;
+        .card-preview h2 {
+            color: #1e40af;
+            font-size: 18px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #dbeafe;
+        }
+
+        .card {
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            background: linear-gradient(135deg, #f8fafc 0%, #ecf0f1 100%);
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #1e40af, #059669);
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .card-logo {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 2px;
+        }
+
+        .card-title {
+            font-size: 10px;
+            color: #64748b;
+            letter-spacing: 0.5px;
+        }
+
+        .card-body {
+            display: flex;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .card-photo-section {
+            flex-shrink: 0;
+        }
+
+        .card-photo {
+            width: 80px;
+            height: 100px;
+            border: 1px solid #cbd5e1;
+            border-radius: 3px;
+            overflow: hidden;
+            background: #f0f9ff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .card-photo:hover {
+            border-color: #059669;
+            box-shadow: 0 0 8px rgba(5, 150, 105, 0.2);
+        }
+
+        .card-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+        }
+
+        .info-label {
+            color: #64748b;
+            font-weight: 600;
+            min-width: 50px;
+        }
+
+        .info-value {
+            color: #1e293b;
+            font-weight: 500;
+            flex: 1;
+            text-align: right;
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .info-value:hover {
+            background: rgba(30, 64, 175, 0.05);
+            color: #1e40af;
+        }
+
+        .card-footer {
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .qr-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
         }
 
         #qrcode {
-            display: inline-block;
-            padding: 20px;
-            background: white;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .options {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
+        #qrcode canvas {
+            width: 60px !important;
+            height: 60px !important;
         }
 
-        .option-group {
-            text-align: left;
+        .qr-label {
+            font-size: 8px;
+            color: #64748b;
         }
 
-        .option-group label {
-            margin-bottom: 8px;
+        .seal {
+            width: 60px;
+            height: 60px;
+            border: 2px solid #f59e0b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #f59e0b;
+            font-size: 24px;
+            font-weight: 700;
+            flex-shrink: 0;
         }
 
-        select {
-            width: 100%;
-            padding: 8px;
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
+        .timer-display {
+            margin-left: auto;
+            text-align: center;
+            font-size: 11px;
+        }
+
+        .timer-display .time-value {
             font-size: 14px;
-            cursor: pointer;
+            font-weight: 700;
+            color: #ef4444;
         }
 
-        select:focus {
-            outline: none;
-            border-color: #667eea;
+        .download-section {
+            text-align: center;
+            margin-top: 15px;
         }
 
-        .success-message {
+        button.btn-download-card {
+            background: #059669;
+            color: white;
+            padding: 10px 20px;
+            display: inline-block;
+        }
+
+        .message {
             display: none;
             text-align: center;
-            color: #48bb78;
+            color: #059669;
             font-weight: 600;
-            margin-top: 10px;
+            margin-top: 8px;
+            font-size: 12px;
         }
 
-        .success-message.show {
+        .message.show {
             display: block;
             animation: slideIn 0.3s ease;
         }
@@ -200,150 +452,499 @@
             }
         }
 
-        @media (max-width: 600px) {
-            .container {
-                padding: 20px;
-            }
+        /* 수정 모달 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
 
-            h1 {
-                font-size: 22px;
-            }
+        .modal.active {
+            display: flex;
+        }
 
-            .options {
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #dbeafe;
+        }
+
+        .modal-header h3 {
+            color: #1e40af;
+            font-size: 16px;
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-footer button {
+            flex: 1;
+        }
+
+        .btn-save {
+            background: #059669;
+            color: white;
+        }
+
+        .btn-save:hover {
+            background: #047857;
+        }
+
+        .btn-cancel {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-cancel:hover {
+            background: #d1d5db;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
                 grid-template-columns: 1fr;
             }
 
-            .button-group {
-                flex-direction: column;
+            .card {
+                aspect-ratio: auto;
+                min-height: 300px;
             }
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .form-section,
+            .card-preview {
+                padding: 20px;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            .card-body {
+                gap: 10px;
+            }
+
+            .card-photo {
+                width: 60px;
+                height: 80px;
+            }
+
+            .seal {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+
+            #qrcode canvas {
+                width: 50px !important;
+                height: 50px !important;
+            }
+
+            .card-footer {
+                flex-wrap: wrap;
+            }
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #1e40af;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #e2e8f0;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📱 QR 코드 생성기</h1>
-
-        <div class="input-section">
-            <label for="textInput">텍스트 또는 URL 입력:</label>
-            <textarea id="textInput" placeholder="QR 코드로 변환할 텍스트나 URL을 입력하세요..."></textarea>
+        <div class="header">
+            <h1>🏛️ 정부24 민증 생성기</h1>
+            <p>개인 정보를 입력하여 민간인 증명서를 생성하세요</p>
         </div>
 
-        <div class="options">
-            <div class="option-group">
-                <label for="sizeSelect">크기 선택:</label>
-                <select id="sizeSelect">
-                    <option value="100">작음 (100px)</option>
-                    <option value="200" selected>중간 (200px)</option>
-                    <option value="300">큼 (300px)</option>
-                    <option value="400">매우 큼 (400px)</option>
-                </select>
+        <div class="timer">
+            <div>남은 시간</div>
+            <div class="timer-bar">
+                <div class="timer-fill" id="timerFill"></div>
+            </div>
+            <div id="timerText">10:00</div>
+        </div>
+
+        <div class="main-content">
+            <!-- 입력 폼 -->
+            <div class="form-section">
+                <h2>📝 정보 입력</h2>
+
+                <div class="form-group">
+                    <label>증명사진</label>
+                    <div class="photo-preview" id="photoPreview" onclick="document.getElementById('photoInput').click();"></div>
+                    <input type="file" id="photoInput" accept="image/*" onchange="loadPhoto()" style="display: none;">
+                    <div class="photo-hint">사진을 클릭하여 변경</div>
+                </div>
+
+                <div class="form-group">
+                    <label>성명 *</label>
+                    <input type="text" id="name" placeholder="홍길동" oninput="updateCard()">
+                </div>
+
+                <div class="form-group">
+                    <label>주민등록번호 *</label>
+                    <input type="text" id="idNumber" placeholder="900101-1234567" maxlength="14" oninput="updateCard()">
+                </div>
+
+                <div class="section-title">📅 생년월일 수정</div>
+                <div class="form-group">
+                    <label>생년월일</label>
+                    <input type="date" id="birthDate" oninput="updateCard()">
+                </div>
+
+                <div class="section-title">📍 주소 수정</div>
+                <div class="form-group">
+                    <label>주소</label>
+                    <input type="text" id="address" placeholder="서울시 강남구" oninput="updateCard()">
+                </div>
+
+                <div class="form-group">
+                    <label>상세주소</label>
+                    <input type="text" id="addressDetail" placeholder="테헤란로 123" oninput="updateCard()">
+                </div>
+
+                <div class="form-group">
+                    <label>전화번호</label>
+                    <input type="tel" id="phone" placeholder="010-1234-5678" oninput="updateCard()">
+                </div>
+
+                <div class="form-group">
+                    <label>직업</label>
+                    <input type="text" id="job" placeholder="직업 입력" oninput="updateCard()">
+                </div>
+
+                <div class="form-group">
+                    <label>발행년월일</label>
+                    <input type="date" id="issueDate" oninput="updateCard()">
+                </div>
+
+                <div class="button-group">
+                    <button class="btn-generate" onclick="generateCard()">민증 생성</button>
+                    <button class="btn-clear" onclick="clearForm()">초기화</button>
+                </div>
             </div>
 
-            <div class="option-group">
-                <label for="colorSelect">색상 선택:</label>
-                <select id="colorSelect">
-                    <option value="dark" selected>검은색</option>
-                    <option value="blue">파란색</option>
-                    <option value="red">빨간색</option>
-                    <option value="green">초록색</option>
-                    <option value="purple">보라색</option>
-                </select>
+            <!-- 민증 미리보기 -->
+            <div class="card-preview">
+                <h2>🎫 미리보기</h2>
+                <div class="card" id="card">
+                    <div class="card-header">
+                        <div class="card-logo">대한민국</div>
+                        <div class="card-title">민간인 증명서</div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="card-photo-section">
+                            <div class="card-photo" id="cardPhotoContainer" onclick="document.getElementById('photoInput').click();">
+                                <img id="cardPhoto" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 130'%3E%3Crect fill='%23e0e7ff' width='100' height='130'/%3E%3Ctext x='50' y='65' font-size='14' text-anchor='middle' fill='%236366f1'%3E사진%3C/text%3E%3C/svg%3E" alt="증명사진">
+                            </div>
+                        </div>
+                        <div class="card-info">
+                            <div class="info-row">
+                                <div class="info-label">성명</div>
+                                <div class="info-value" id="displayName" title="클릭하여 수정">이름</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">주민번호</div>
+                                <div class="info-value" id="displayIdNumber" title="클릭하여 수정">000000-0000000</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">생년월일</div>
+                                <div class="info-value" id="displayBirthDate" onclick="editField('birthDate', '생년월일')" title="클릭하여 수정">0000.00.00</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">주소</div>
+                                <div class="info-value" id="displayAddress" onclick="editField('address', '주소')" title="클릭하여 수정">주소</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">직업</div>
+                                <div class="info-value" id="displayJob" onclick="editField('job', '직업')" title="클릭하여 수정">직업</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="qr-section">
+                            <div id="qrcode"></div>
+                            <div class="qr-label">QR코드</div>
+                        </div>
+                        <div class="seal">인</div>
+                        <div class="timer-display">
+                            <div>남은 시간</div>
+                            <div class="time-value" id="cardTimer">10:00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="download-section">
+                    <button class="btn-download-card" onclick="downloadCard()" id="downloadBtn" style="display: none;">
+                        📥 민증 다운로드
+                    </button>
+                    <div class="message" id="successMessage">✓ 민증이 생성되었습니다!</div>
+                </div>
             </div>
-        </div>
-
-        <div class="button-group">
-            <button class="btn-generate" onclick="generateQR()">QR 코드 생성</button>
-            <button class="btn-download" id="downloadBtn" onclick="downloadQR()" style="display: none;">다운로드</button>
-            <button class="btn-clear" onclick="clearAll()">초기화</button>
-        </div>
-
-        <div class="qr-output" id="qrOutput">
-            <div id="qrcode"></div>
-            <button class="btn-download" onclick="downloadQR()">QR 코드 다운로드</button>
-            <div class="success-message" id="successMessage">✓ QR 코드가 생성되었습니다!</div>
         </div>
     </div>
 
-    <script>
-        let currentQRCode = null;
+    <!-- 수정 모달 -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">수정</h3>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="editInput" placeholder="입력해주세요">
+            </div>
+            <div class="modal-footer">
+                <button class="btn-save" onclick="saveEdit()">저장</button>
+                <button class="btn-cancel" onclick="closeModal()">취소</button>
+            </div>
+        </div>
+    </div>
 
-        function generateQR() {
-            const text = document.getElementById('textInput').value.trim();
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        let currentQR = null;
+        let photoFile = null;
+        let totalTime = 600; // 10분 (초)
+        let remainingTime = 600;
+        let timerInterval = null;
+        let editingField = null;
+
+        // 타이머 시작
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
             
-            if (!text) {
-                alert('텍스트를 입력해주세요!');
+            timerInterval = setInterval(() => {
+                remainingTime--;
+                updateTimerDisplay();
+
+                if (remainingTime <= 0) {
+                    clearInterval(timerInterval);
+                    alert('시간이 만료되었습니다!');
+                    resetTimer();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(remainingTime / 60);
+            const seconds = remainingTime % 60;
+            const timeString = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            document.getElementById('timerText').textContent = timeString;
+            document.getElementById('cardTimer').textContent = timeString;
+
+            // 진행 바 업데이트
+            const percentage = (remainingTime / totalTime) * 100;
+            document.getElementById('timerFill').style.width = percentage + '%';
+
+            // 색상 변경
+            if (remainingTime <= 60) {
+                document.getElementById('timerFill').style.background = 'linear-gradient(90deg, #ef4444, #dc2626)';
+            } else if (remainingTime <= 180) {
+                document.getElementById('timerFill').style.background = 'linear-gradient(90deg, #f59e0b, #d97706)';
+            }
+        }
+
+        function resetTimer() {
+            remainingTime = 600;
+            updateTimerDisplay();
+        }
+
+        // 모달 함수
+        function editField(fieldId, fieldName) {
+            editingField = fieldId;
+            document.getElementById('modalTitle').textContent = fieldName + ' 수정';
+            document.getElementById('editInput').value = document.getElementById(fieldId).value;
+            document.getElementById('editModal').classList.add('active');
+            document.getElementById('editInput').focus();
+        }
+
+        function saveEdit() {
+            const value = document.getElementById('editInput').value;
+            if (editingField && value.trim()) {
+                document.getElementById(editingField).value = value;
+                updateCard();
+                closeModal();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('editModal').classList.remove('active');
+            editingField = null;
+        }
+
+        // 엔터키로 저장
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('editInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    saveEdit();
+                }
+            });
+        });
+
+        function loadPhoto() {
+            const file = document.getElementById('photoInput').files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const preview = document.getElementById('photoPreview');
+                preview.innerHTML = `<img src="${e.target.result}" alt="증명사진">`;
+                document.getElementById('cardPhoto').src = e.target.result;
+                photoFile = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function updateCard() {
+            const name = document.getElementById('name').value || '이름';
+            const idNumber = document.getElementById('idNumber').value || '000000-0000000';
+            const birthDate = document.getElementById('birthDate').value;
+            const address = document.getElementById('address').value || '주소';
+            const addressDetail = document.getElementById('addressDetail').value;
+            const job = document.getElementById('job').value || '직업';
+            const issueDate = document.getElementById('issueDate').value;
+
+            document.getElementById('displayName').textContent = name;
+            document.getElementById('displayIdNumber').textContent = idNumber || '000000-0000000';
+            
+            const fullAddress = addressDetail ? `${address} ${addressDetail}` : address;
+            document.getElementById('displayAddress').textContent = fullAddress;
+            document.getElementById('displayJob').textContent = job;
+
+            // 생년월일 포맷
+            if (birthDate) {
+                const date = new Date(birthDate);
+                const formattedDate = `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
+                document.getElementById('displayBirthDate').textContent = formattedDate;
+            } else {
+                document.getElementById('displayBirthDate').textContent = '0000.00.00';
+            }
+        }
+
+        function generateCard() {
+            const name = document.getElementById('name').value.trim();
+            const idNumber = document.getElementById('idNumber').value.trim();
+
+            if (!name || !idNumber) {
+                alert('성명과 주민등록번호는 필수입니다!');
                 return;
             }
 
-            const size = document.getElementById('sizeSelect').value;
-            const colorMode = document.getElementById('colorSelect').value;
-
-            // Clear previous QR code
+            // QR 코드 생성
             const qrcodeDiv = document.getElementById('qrcode');
             qrcodeDiv.innerHTML = '';
 
-            // Color mapping
-            const colorMap = {
-                'dark': { dark: '#000000', light: '#FFFFFF' },
-                'blue': { dark: '#0066cc', light: '#E6F2FF' },
-                'red': { dark: '#cc0000', light: '#FFE6E6' },
-                'green': { dark: '#00aa00', light: '#E6FFE6' },
-                'purple': { dark: '#7700aa', light: '#F0E6FF' }
-            };
-
-            const colors = colorMap[colorMode];
-
-            // Generate QR code
-            currentQRCode = new QRCode(document.getElementById('qrcode'), {
-                text: text,
-                width: parseInt(size),
-                height: parseInt(size),
-                colorDark: colors.dark,
-                colorLight: colors.light,
+            const birthDate = document.getElementById('birthDate').value || '미등록';
+            const address = document.getElementById('address').value || '미등록';
+            const qrData = `${name}|${idNumber}|${birthDate}|${address}`;
+            
+            currentQR = new QRCode(qrcodeDiv, {
+                text: qrData,
+                width: 60,
+                height: 60,
+                colorDark: '#1e40af',
+                colorLight: '#f8fafc',
                 correctLevel: QRCode.CorrectLevel.H
             });
 
-            // Show output section
-            document.getElementById('qrOutput').classList.add('active');
+            updateCard();
             document.getElementById('downloadBtn').style.display = 'inline-block';
             
-            // Show success message
-            const successMsg = document.getElementById('successMessage');
-            successMsg.classList.remove('show');
+            // 타이머 시작
+            resetTimer();
+            startTimer();
+
+            const msg = document.getElementById('successMessage');
+            msg.classList.remove('show');
             setTimeout(() => {
-                successMsg.classList.add('show');
+                msg.classList.add('show');
             }, 100);
 
-            // Hide success message after 3 seconds
             setTimeout(() => {
-                successMsg.classList.remove('show');
+                msg.classList.remove('show');
             }, 3000);
         }
 
-        function downloadQR() {
-            const canvas = document.querySelector('#qrcode canvas');
-            if (canvas) {
+        function downloadCard() {
+            const card = document.getElementById('card');
+            html2canvas(card, {
+                backgroundColor: '#ffffff',
+                scale: 2,
+                useCORS: true
+            }).then((canvas) => {
                 const link = document.createElement('a');
-                link.download = 'qrcode.png';
+                link.download = '민간인증명서.png';
                 link.href = canvas.toDataURL('image/png');
                 link.click();
-            }
+            });
         }
 
-        function clearAll() {
-            document.getElementById('textInput').value = '';
-            document.getElementById('qrOutput').classList.remove('active');
+        function clearForm() {
+            document.getElementById('photoInput').value = '';
+            document.getElementById('name').value = '';
+            document.getElementById('idNumber').value = '';
+            document.getElementById('birthDate').value = '';
+            document.getElementById('address').value = '';
+            document.getElementById('addressDetail').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('job').value = '';
+            document.getElementById('issueDate').value = '';
+            document.getElementById('photoPreview').innerHTML = '';
             document.getElementById('downloadBtn').style.display = 'none';
             document.getElementById('qrcode').innerHTML = '';
-            document.getElementById('textInput').focus();
+            
+            if (timerInterval) clearInterval(timerInterval);
+            resetTimer();
+            
+            updateCard();
         }
 
-        // Enter key to generate QR code
-        document.getElementById('textInput').addEventListener('keydown', (e) => {
-            if (e.ctrlKey && e.key === 'Enter') {
-                generateQR();
+        // 모달 바깥 클릭으로 닫기
+        document.getElementById('editModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('editModal')) {
+                closeModal();
             }
         });
+
+        // 초기 업데이트
+        updateCard();
+        updateTimerDisplay();
     </script>
 </body>
 </html>
