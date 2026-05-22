@@ -1,0 +1,205 @@
+.profile-form {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  max-width: 600px;
+  margin: 0 auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-form h2 {
+  margin-top: 0;
+  margin-bottom: 24px;
+  font-size: 24px;
+  color: #333;
+}
+
+.form-section {
+  margin-bottom: 24px;
+}
+
+.form-section h3 {
+  font-size: 16px;
+  color: #555;
+  margin: 0 0 12px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e5e5e5;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.form-group input[type='text'],
+.form-group input[type='date'],
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+
+.form-group input[type='text']:focus,
+.form-group input[type='date']:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #2a5298;
+  box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.error-message {
+  display: block;
+  color: #e74c3c;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.char-count {
+  display: block;
+  font-size: 12px;
+  color: #999;
+  margin-top: 4px;
+  text-align: right;
+}
+
+/* 사진 업로드 섹션 */
+.photo-upload-section {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.photo-preview {
+  flex-shrink: 0;
+}
+
+.preview-image {
+  width: 100px;
+  height: 120px;
+  object-fit: cover;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.no-preview {
+  width: 100px;
+  height: 120px;
+  background-color: #f5f5f5;
+  border: 2px dashed #ddd;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 12px;
+  text-align: center;
+}
+
+.photo-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btn-upload,
+.btn-remove {
+  padding: 8px 16px;
+  font-size: 13px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 600;
+}
+
+.btn-upload {
+  background-color: #2a5298;
+  color: white;
+}
+
+.btn-upload:hover {
+  background-color: #1e3c72;
+  box-shadow: 0 2px 4px rgba(42, 82, 152, 0.3);
+}
+
+.btn-remove {
+  background-color: #ecf0f1;
+  color: #555;
+  border: 1px solid #bdc3c7;
+}
+
+.btn-remove:hover {
+  background-color: #bdc3c7;
+  color: #333;
+}
+
+/* 폼 버튼 섹션 */
+.form-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 2px solid #e5e5e5;
+}
+
+.btn-submit {
+  flex: 1;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(42, 82, 152, 0.4);
+}
+
+.btn-submit:active {
+  transform: translateY(0);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 600px) {
+  .profile-form {
+    padding: 16px;
+  }
+
+  .photo-upload-section {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .form-buttons {
+    flex-direction: column;
+  }
+
+  .btn-submit {
+    width: 100%;
+  }
+}
