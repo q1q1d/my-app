@@ -1,0 +1,118 @@
+.qrcode-share {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  max-width: 500px;
+  margin: 0 auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.qrcode-share.empty {
+  color: #999;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qrcode-share h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 20px;
+  color: #333;
+}
+
+.qrcode-warning {
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.qrcode-warning p {
+  margin: 4px 0;
+  font-size: 13px;
+  color: #856404;
+}
+
+.qrcode-warning p:first-child {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.qrcode-container {
+  background: white;
+  padding: 20px;
+  border: 2px solid #e5e5e5;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: inline-block;
+}
+
+.qrcode-container canvas {
+  display: block;
+}
+
+.qrcode-info {
+  background: #f9f9f9;
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.qrcode-info p {
+  margin: 6px 0;
+  font-size: 13px;
+  color: #555;
+}
+
+.qrcode-info strong {
+  color: #333;
+  min-width: 80px;
+  display: inline-block;
+}
+
+.qrcode-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.btn-download {
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-download:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-download:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 600px) {
+  .qrcode-share {
+    padding: 16px;
+  }
+
+  .qrcode-container {
+    padding: 12px;
+  }
+
+  .btn-download {
+    flex: 1;
+  }
+}
